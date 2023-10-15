@@ -1,7 +1,7 @@
 package seedu.financialplanner;
 
-import seedu.financialplanner.commands.Command;
-import seedu.financialplanner.commands.Exit;
+import seedu.financialplanner.commands.AbstractCommand;
+import seedu.financialplanner.commands.ExitCommand;
 import seedu.financialplanner.exceptions.FinancialPlannerException;
 import seedu.financialplanner.investments.WatchList;
 import seedu.financialplanner.list.FinancialList;
@@ -33,14 +33,14 @@ public class FinancialPlanner {
 
         ui.welcomeMessage();
         String input;
-        Command command = null;
+        AbstractCommand command = null;
 
-        while (!(command instanceof Exit)) {
+        while (!(command instanceof ExitCommand)) {
             input = ui.input();
             try {
-                command = Parser.parse(input);
-                command.execute(ui, financialList, watchList);
-            } catch (FinancialPlannerException e) {
+                command = Parser.parseCommand(input);
+                command.execute();
+            } catch (Exception e) {
                 ui.showMessage(e.getMessage());
             }
         }

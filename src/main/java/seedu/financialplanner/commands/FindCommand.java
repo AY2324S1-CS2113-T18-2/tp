@@ -6,42 +6,45 @@ import seedu.financialplanner.utils.Ui;
 
 import java.util.ArrayList;
 
-public class Find extends Command{
+public class FindCommand extends AbstractCommand {
     private final String description;
 
-    public Find(String description) {
-        this.description = description;
+    public FindCommand(RawCommand rawCommand) {
+        this.description = String.join(" ", rawCommand.args);
     }
 
     @Override
-    public void execute(Ui ui, FinancialList financialList, WatchList watchList) {
+    public void execute() {
+        FinancialList financialList = FinancialList.INSTANCE;
+        Ui ui = Ui.INSTANCE;
+        WatchList watchList = WatchList.INSTANCE;
         ArrayList<String> foundedFinancialList = new ArrayList<>();
         ArrayList<String> foundedWatchList = new ArrayList<>();
-        for(int i = 0; i < financialList.size(); i++) {
-            if(financialList.get(i).formatString().contains(description)) {
+        for (int i = 0; i < financialList.size(); i++) {
+            if (financialList.get(i).formatString().contains(description)) {
                 foundedFinancialList.add(financialList.get(i).formatString());
             }
         }
-        if(!foundedFinancialList.isEmpty()){
+        if (!foundedFinancialList.isEmpty()) {
             ui.showMessage("Here are the matching financial records in your financial list:");
-        }else{
+        } else {
             ui.showMessage("There is no matching financial record in your financial list.");
         }
-        for(String foundedFinancialRecord : foundedFinancialList) {
+        for (String foundedFinancialRecord : foundedFinancialList) {
             ui.showMessage(foundedFinancialRecord);
         }
 
-        for(int i = 0; i < watchList.size(); i++) {
-            if(watchList.get(i).toString().contains(description)) {
+        for (int i = 0; i < watchList.size(); i++) {
+            if (watchList.get(i).toString().contains(description)) {
                 foundedWatchList.add(watchList.get(i).toString());
             }
         }
-        if(!foundedWatchList.isEmpty()) {
+        if (!foundedWatchList.isEmpty()) {
             ui.showMessage("Here are the matching stock records in your stock list:");
-        }else{
+        } else {
             ui.showMessage("There is no matching stock record in your stock list.");
         }
-        for(String foundedStockRecord : foundedWatchList) {
+        for (String foundedStockRecord : foundedWatchList) {
             ui.showMessage(foundedStockRecord);
         }
     }

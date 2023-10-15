@@ -8,7 +8,6 @@ import seedu.financialplanner.list.FinancialList;
 import seedu.financialplanner.list.Income;
 import seedu.financialplanner.utils.Ui;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
