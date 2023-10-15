@@ -15,13 +15,13 @@ class EntryTest {
 
     @Test
     void testExecute() {
-        EntryCommand testEntry = new EntryCommand(Parser.parseRawCommand("add income a/300 t/work r/30"));
+        EntryCommand testEntry = new EntryCommand(Parser.parseRawCommand("add income /a 300 /t work /r 30"));
         testEntry.execute();
         assertEquals(300, testEntry.amount);
         assertEquals("work", testEntry.category);
         assertEquals(30, testEntry.recur);
 
-        testEntry = new EntryCommand(Parser.parseRawCommand("add expense a/15 t/double_mcspicy"));
+        testEntry = new EntryCommand(Parser.parseRawCommand("add expense /a 15 /t double_mcspicy"));
         testEntry.execute();
         assertEquals(15, testEntry.amount);
         assertEquals("double_mcspicy", testEntry.category);

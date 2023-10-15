@@ -25,27 +25,42 @@ public class Parser {
         List<String> args = new ArrayList<>();
         Map<String, String> extraArgs = new HashMap<>();
 
+        List<String> extraArgumentContentBuffer = new ArrayList<>();
+        String currentExtraArgumentName = null;
+
         while (iterator.hasNext()) {
             String next = iterator.next();
-            if (next.contains("/")) {
-                int indexOfDelimiter = next.indexOf("/");
-                String extraArgumentName = next.substring(0, indexOfDelimiter);
-                if (extraArgumentName.isEmpty()) {
-                    throw new IllegalArgumentException("Extra argument name cannot be empty");
-                }
-                String extraArgumentContent = next.substring(indexOfDelimiter + 1);
-                if (extraArgumentContent.isEmpty()) {
-                    throw new IllegalArgumentException("Extra argument content cannot be empty");
-                }
-                if (extraArgs.containsKey(extraArgumentName)) {
+            if (next.startsWith("/")) {
+                // Save previous extra argument when next extra argument is found
+                if (currentExtraArgumentName != null && extraArgs.containsKey(currentExtraArgumentName)) {
                     throw new IllegalArgumentException("Duplicate extra argument name");
                 } else {
-                    extraArgs.put(extraArgumentName, extraArgumentContent);
+                    extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
+                    extraArgumentContentBuffer.clear();
                 }
+
+                if (next.length() == 1) {
+                    throw new IllegalArgumentException("Extra argument name cannot be empty");
+                }
+
+                currentExtraArgumentName =next.substring(1);
+
             } else {
-                args.add(next);
+                if (currentExtraArgumentName == null) {
+                    args.add(next);
+                } else {
+                    extraArgumentContentBuffer.add(next);
+                }
             }
         }
+        // Save previous extra argument at the very end
+        if (currentExtraArgumentName != null && extraArgs.containsKey(currentExtraArgumentName)) {
+            throw new IllegalArgumentException("Duplicate extra argument name");
+        } else {
+            extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
+            extraArgumentContentBuffer.clear();
+        }
+
         return new RawCommand(commandName, args, extraArgs);
     }
 
