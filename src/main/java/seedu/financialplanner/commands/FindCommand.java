@@ -11,6 +11,10 @@ public class FindCommand extends AbstractCommand {
 
     public FindCommand(RawCommand rawCommand) {
         this.description = String.join(" ", rawCommand.args);
+        if (!rawCommand.extraArgs.isEmpty()) {
+            String unknownExtraArgument = new ArrayList<>(rawCommand.extraArgs.keySet()).get(0);
+            throw new IllegalArgumentException(String.format("Unknown extra argument: %s", unknownExtraArgument));
+        }
     }
 
     @Override

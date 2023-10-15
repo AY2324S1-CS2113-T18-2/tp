@@ -32,11 +32,13 @@ public class Parser {
             String next = iterator.next();
             if (next.startsWith("/")) {
                 // Save previous extra argument when next extra argument is found
-                if (currentExtraArgumentName != null && extraArgs.containsKey(currentExtraArgumentName)) {
-                    throw new IllegalArgumentException("Duplicate extra argument name");
-                } else {
-                    extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
-                    extraArgumentContentBuffer.clear();
+                if (currentExtraArgumentName != null) {
+                    if (extraArgs.containsKey(currentExtraArgumentName)) {
+                        throw new IllegalArgumentException(String.format("Duplicate extra argument name: %s", currentExtraArgumentName));
+                    } else {
+                        extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
+                        extraArgumentContentBuffer.clear();
+                    }
                 }
 
                 if (next.length() == 1) {
@@ -54,11 +56,13 @@ public class Parser {
             }
         }
         // Save previous extra argument at the very end
-        if (currentExtraArgumentName != null && extraArgs.containsKey(currentExtraArgumentName)) {
-            throw new IllegalArgumentException("Duplicate extra argument name");
-        } else {
-            extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
-            extraArgumentContentBuffer.clear();
+        if (currentExtraArgumentName != null) {
+            if (extraArgs.containsKey(currentExtraArgumentName)) {
+                throw new IllegalArgumentException(String.format("Duplicate extra argument name: %s", currentExtraArgumentName));
+            } else {
+                extraArgs.put(currentExtraArgumentName, String.join(" ", extraArgumentContentBuffer));
+                extraArgumentContentBuffer.clear();
+            }
         }
 
         return new RawCommand(commandName, args, extraArgs);
@@ -67,10 +71,10 @@ public class Parser {
     public static AbstractCommand parseCommand(RawCommand rawCommand) throws IllegalArgumentException{
         switch (rawCommand.getCommandName()) {
             case EXIT_COMMAND_NAME: {
-                return new ExitCommand();
+                return new ExitCommand(rawCommand);
             }
             case WATCHLIST_COMMAND_NAME: {
-                return new WatchListCommand();
+                return new WatchListCommand(rawCommand);
             }
             case ADD_ENTRY_COMMAND_NAME: {
                 return new EntryCommand(rawCommand);
